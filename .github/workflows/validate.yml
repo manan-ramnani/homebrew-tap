@@ -1,0 +1,26 @@
+name: Validate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  formula:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Check formula syntax
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          formulas=(Formula/*.rb)
+          if [ ${#formulas[@]} -eq 0 ]; then
+            echo "No formulas yet"
+            exit 0
+          fi
+          ruby -c "${formulas[@]}"
